@@ -47,7 +47,11 @@ class CharList extends Component {
                   className = (this.state.selectedItem === item.id)? " char__item_selected" : null;
 
             return (
-                <li onClick={() => this.clickItem(item.id)}
+                <li onClick={() => {
+                    this.clickItem(item.id)
+                    this.props.onCharSelected(item.id)
+                    }
+                  }
                     className={`char__item ${className}`}
                     key={item.id}>
                         <img src={item.thumbnail} alt={item.name} style={imgStyle}/>
