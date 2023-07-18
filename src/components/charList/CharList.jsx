@@ -1,4 +1,6 @@
 import {Component} from 'react';
+import PropTypes from 'prop-types';
+
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 import MarvelService from '../../services/MarvelService';
@@ -10,27 +12,41 @@ class CharList extends Component {
         charList: [],
         loading: true,
         error: false,
-        selectedItem: null
+        offset: 109,
+        charEnded: false,
+        onButtonSpinner: false
     }
-
-    clickItem = (id) => {
-        this.setState({
-            selectedItem: id
-        })
-    }
+    
     marvelService = new MarvelService();
 
     componentDidMount() {
-        this.marvelService.getAllCharacters()
+        this.onRequest();
+    }
+
+    onRequest = (offset) => {
+        this.marvelService.getAllCharacters(offset)
             .then(this.onCharListLoaded)
             .catch(this.onError)
     }
 
-    onCharListLoaded = (charList) => {
+    onButtonSpinner = () => {
         this.setState({
-            charList,
-            loading: false
+            onButtonSpinner: true
         })
+    }
+    onCharListLoaded = (newCharList) => {
+        let ended = false;
+        if (newCharList.length < 9) {
+            ended = true;
+        }
+
+        this.setState(({offset, charList}) => ({
+            charList: [...charList,...newCharList],
+            loading: false,
+            onButtonSpinner:false,
+            offset: offset + 9,
+            charEnded: ended
+        }))
     }
 
     onError = () => {
@@ -47,14 +63,19 @@ class CharList extends Component {
     }
 
     focusOnItem = (id) => {
+ 
         this.itemRefs.forEach(item => item.classList.remove('char__item_selected'));
         this.itemRefs[id].classList.add('char__item_selected');
         this.itemRefs[id].focus();
     }
+
+
     renderItems(arr) {
         const items =  arr.map((item, i) => {
-            const imgStyle = (item.thumbnail === 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg')? {'objectFit' : 'unset'} : {'objectFit' : 'cover'}
-
+            let imgStyle = {'objectFit' : 'cover'};
+            if (item.thumbnail === 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg') {
+                imgStyle = {'objectFit' : 'unset'};
+            }
             
             return (
                 <li 
@@ -77,7 +98,7 @@ class CharList extends Component {
                 </li>
             )
         });
-
+    
         return (
             <ul className="char__grid">
                 {items}
@@ -87,29 +108,39 @@ class CharList extends Component {
 
     render() {
 
-        const {charList, loading, error, offset, newItemLoading, charEnded} = this.state;
+        const {charList, loading, error, offset, onButtonSpinner, charEnded} = this.state;
         
         const items = this.renderItems(charList);
 
         const errorMessage = error ? <ErrorMessage/> : null;
         const spinner = loading ? <Spinner/> : null;
         const content = !(loading || error) ? items : null;
+        const  buttonSpinner = onButtonSpinner ? <Spinner/> :null 
 
         return (
             <div className="char__list">
                 {errorMessage}
                 {spinner}
                 {content}
-                <button 
-                    className="button button__main button__long"
-                    disabled={newItemLoading}
-                    style={{'display': charEnded ? 'none' : 'block'}}
-                    onClick={() => this.onRequest(offset)}>
-                    <div className="inner">load more</div>
-                </button>
+                <>
+                    {buttonSpinner}
+                    <button 
+                        className="button button__main button__long"
+                        style={{'display': charEnded ? 'none' : 'block'}}
+                        onClick={() =>{
+                            this.onButtonSpinner()
+                            this.onRequest(offset)
+                            }}>
+                        <div className="inner">load more</div>
+                    </button>
+                </>
             </div>
         )
     }
+}
+
+CharList.propTypes = {
+    onCharSelected: PropTypes.func.isRequired
 }
 
 export default CharList;
