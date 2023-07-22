@@ -10,14 +10,12 @@ const CharList = (props) => {
 
     const [charList, setCharList] = useState([]);
     const [newItemLoading, setNewItemLoading] = useState(false);
-    const [offset, setOffset] = useState(210);
+    const [offset, setOffset] = useState(109);
     const [charEnded, setCharEnded] = useState(false);
     const [firstLoading, setFirstLoading] = useState(true);
     const {loading, error, getAllCharacters} = useMarvelService();
 
-    useEffect(() => {
-        onRequest(offset, true);
-    }, [])
+    useEffect(() => onRequest(offset, true), [])
 
     const onRequest = (offset, initial) => {
         initial ? setFirstLoading(false) : setFirstLoading(true);
@@ -30,10 +28,7 @@ const CharList = (props) => {
     }
 
     const onCharListLoaded = (newCharList) => {
-        let ended = false;
-        if (newCharList.length < 9) {
-            ended = true;
-        }
+        let ended = (newCharList.length < 9)? true : false
 
         setCharList(charList => [...charList, ...newCharList]);
         setNewItemLoading(false);
@@ -86,24 +81,25 @@ const CharList = (props) => {
 
     const errorMessage = error ? <ErrorMessage/> : null;
     const spinner = (loading && !firstLoading) ? <Spinner/> : null;
-    const  buttonSpinner = newItemLoading ? <Spinner/> :null 
+    const  buttonSpinner = 
+                        newItemLoading ? 
+                            <Spinner/> : 
+                                <button className="button button__main button__long"
+                                        disabled={newItemLoading}
+                                        style={{"display": charEnded ? "none" : "block"}}
+                                        onClick={() =>{
+                                                    onCharListLoading()
+                                                    onRequest(offset)
+                                                    }
+                                                }>
+                                    <div className="inner">load more</div>
+                                </button>
     return (
         <div className="char__list">
             {errorMessage}
             {spinner}
             {items}
-            <>
-                    {buttonSpinner}
-                    <button 
-                        className="button button__main button__long"
-                        style={{'display': charEnded ? 'none' : 'block'}}
-                        onClick={() =>{
-                            onCharListLoading()
-                            onRequest(offset)
-                            }}>
-                        <div className="inner">load more</div>
-                    </button>
-                </>
+            {buttonSpinner}        
         </div>
     )
 }
