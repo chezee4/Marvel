@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkmarvel=self.webpackChunkmarvel||[]).push([[882],{940:function(a,c,e){e.r(c),e.d(c,{default:function(){return n}});var r=e.p+"static/media/thor.4c29d108a03153077cc7.gif",t=e(184),n=function(){return(0,t.jsx)("div",{className:"lazy-container",children:(0,t.jsx)("img",{src:r,alt:"thor"})})}}}]);
+//# sourceMappingURL=882.cf13aea1.chunk.js.map

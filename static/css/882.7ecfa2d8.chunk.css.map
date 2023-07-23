@@ -1,0 +1,1 @@
+{"version":3,"file":"static/css/882.7ecfa2d8.chunk.css","mappings":"AAAA,gBACE,aAGA,SAFA,kBACA,QAEA","sources":["components/lazyLoading/lazyLoading.scss"],"sourcesContent":[".lazy-container {\r\n  display: flex;\r\n  position: absolute;\r\n  top: 50%;\r\n  left: 50%;\r\n  transform: translate(-50%, -50%);\r\n}\r\n"],"names":[],"sourceRoot":""}
