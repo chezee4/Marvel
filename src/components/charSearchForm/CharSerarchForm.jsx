@@ -36,7 +36,7 @@ const CharSearchForm = () => {
                     <div className="char__search-answer" >
                          <img src={char[0].thumbnail} alt={char[0].name} style={imgStyle}/>
                          <div className='char__search-container'>
-                            <div className="char__search-success">There is! Visit {char[0].name} page?</div>
+                            <div className="char__search-success">There is! { !char || !char[0]? null : char[0].description.includes("There is no")? "but we haven't added a description yet." : null} Visit {char[0].name} page?</div>
                             <Link to={`/characters/${char[0].id}`} className="button button__secondary">
                                 <div className="inner">To page</div>
                             </Link>
