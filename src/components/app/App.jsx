@@ -15,7 +15,7 @@ const App = () =>{
             <Router basename="/Marvel">
                 <div className="app">
                     <AppHeader/>
-                    <main style={{"min-height":'80vh'}}>
+                    <main style={{minHeight:'80vh'}}>
                        <Suspense fallback={<LazyLoading/>}>
                             <Routes>
                                 <Route path="/" element={<HeroesPage/>}/>
