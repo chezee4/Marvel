@@ -22,12 +22,14 @@
                         <ErrorBoundary>
                             <CharList onCharSelected={onCharSelected} />
                         </ErrorBoundary>
-                        <ErrorBoundary>
-                         <div>
-                            <CharInfo charId={selectedChar} />
-                            <CharSearchForm/>
-                         </div>
-                        </ErrorBoundary>
+                        <div>
+                            <ErrorBoundary>
+                                <CharInfo charId={selectedChar} />
+                            </ErrorBoundary>
+                            <ErrorBoundary>
+                                <CharSearchForm/>
+                            </ErrorBoundary>
+                        </div>
                     </div>
                     <img className="bg-decoration" src={decoration} alt="vision" />
                 </>
