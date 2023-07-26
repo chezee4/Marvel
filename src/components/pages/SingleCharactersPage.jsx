@@ -1,50 +1,48 @@
 import { useParams, Link } from 'react-router-dom';
+import { Helmet } from "react-helmet"
 import { useState, useEffect } from 'react';
-
+import setContent from '../../utils/setContent';
 import useMarvelService from '../../services/MarvelService';
-import Spinner from '../spinner/Spinner';
-import ErrorMessage from '../errorMessage/ErrorMessage';
 import AppBanner from "../appBanner/AppBanner";
 import './singleComicPage.scss';
 
 const SingleCharactersPage = () => {
     const {id} = useParams();
     const [character, setCharacter] = useState(null);
-    const {loading, error, getCharacter, clearError} = useMarvelService();
+    const {proc, setProcess, getCharacter} = useMarvelService();
 
     useEffect(() => {
         updateCharacter()
     }, [id])
 
     const updateCharacter = () => {
-        clearError();
         getCharacter(id)
             .then(onCharacterLoaded)
+            .then(() => setProcess("confirmed"));
     }
 
     const onCharacterLoaded = (character) => {
         setCharacter(character);
     }
 
-    const errorMessage = error ? <ErrorMessage/> : null;
-    const spinner = loading ? <Spinner/> : null;
-    const content = !(loading || error || !character) ? <View character={character}/> : null;
-
+    const elements = setContent(proc, View, "comic", character )
     return (
         <>
-            <AppBanner/>
-            {errorMessage}
-            {spinner}
-            {content}
+          <AppBanner/>
+          {elements}
         </>
     )
 }
 
-const View = ({character}) => {
-    const {name, description, thumbnail}  = character;
+const View = ({data}) => {
+    const {name, description, thumbnail}  = data;
 
     return (
         <div className="single-comic">
+            <Helmet>
+                <meta name="description" content={`${name} hero`} />
+                <title>{name}</title>
+            </Helmet>
             <img src={thumbnail} alt={name} className="single-comic__char-img"/>
             <div className="single-comic__info">
                 <h2 className="single-comic__name">{name}</h2>
